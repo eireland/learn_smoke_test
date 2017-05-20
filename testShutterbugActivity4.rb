@@ -6,11 +6,12 @@ PHOTON_RADIO = {xpath: './/label[contains(@for,"select-model-3")]'}
 PHOTON_CHECKBOX = {xpath: './/label[contains(@for,"ke-shading")]'}
 SHOW_ATOM_CHECKBOX = {xpath: './/label[contains(@for,"select-show-atoms")]'}
 SHOW_ELECTRON_CLOUD = {xpath: './/label[contains(@for,"select-electron-view-1")]'}
-HAS_DROPDOWN = {css: '.selectboxit-options'}
-HAS_DROPDOWN_SELECTION_LIST = {xpath: "//li[contains(@class,'selectboxit-option')]/a/text()"}
+HAS_DROPDOWN = {css: '.selectboxit-arrow-container'}
 HAS_ADD_WELL = {id: "add-wells-button-set"}
 HAS_MAIN_IMAGE = {id: '#mouse-catcher'}
 HAS_INTRO_CLOSE = {xpath: '//div[contains(@class,"about-dialog")]/div/button[contains(@class,"ui-dialog-titlebar-close")]'}
+SNAPSHOT_BUTTON = {css: '.image_snapshot_button'}
+
 
 url = 'http://authoring.staging.concord.org/activities/762/'
 
@@ -44,6 +45,7 @@ links.each do |link|
     #   learn.open_draw_tool
     #   learn.draw_shape
     #   learn.close_draw_tool
+    #   sleep(5)
     # when /Molecular Workbench/
     #   learn.switch_to_interactive
     #   learn.play_interactive
@@ -67,23 +69,93 @@ links.each do |link|
     #   learn.play_interactive
     #   sleep(2)
     #   learn.switch_to_main
-    when /HAS water/
-      puts "In HAS water"
-      learn.switch_to_interactive
-      learn.click_on(HAS_INTRO_CLOSE)
-      learn.select_from_dropdown(HAS_DROPDOWN,HAS_DROPDOWN_SELECTION_LIST,"Rural")
-      learn.click_on(HAS_ADD_WELL)
-      learn.click_hold(HAS_MAIN_IMAGE,2)
-      learn.play_interactive
-      learn.switch_to_main
-      puts "before take_snapshot"
-      learn.take_snapshot
-      sleep(5)
+    # when /HAS water/
+    #   puts "In HAS water"
+    #   dropdown_loc = "//div[contains(@id,'templatePulldown')]/span/"
+    #   learn.switch_to_interactive
+    #   sleep(2)
+    #   learn.click_on(HAS_INTRO_CLOSE)
+    #   learn.select_from_dropdown(HAS_DROPDOWN,dropdown_loc,"Rural vs. urban areas")
+    #   learn.play_interactive
+    #   learn.switch_to_main
+    # when /line graph/
+    #   puts "In ITSI Model with line graph"
+    #   # click grass, rabbit, hawk, fox buttons, click play button
+    #   play = {css: '.play'}
+    #   element_buttons = {css: '.has-no-button' }
+    #   pause = {css: ".pause"}
+    #
+    #   learn.switch_to_interactive
+    #   el_buttons = learn.find_all(element_buttons)
+    #   el_buttons.each do |button|
+    #     button.click
+    #   end
+    #   learn.click_on(play)
+    #   sleep(10)
+    #   learn.click_on(pause)
+    #   learn.switch_to_main
+    # when /bar graph/
+    #   puts "In ITSI Model with bar graph"
+    #    #click grass, rabbit buttons, click play button
+    #   play = {css: '.play'}
+    #   grass = {xpath: '//*[@id="environment"]/div/div/div[3]' }
+    #   rabbit =  {xpath: '//*[@id="environment"]/div/div/div[4]' }
+    #   pause = {css: ".pause"}
+    #
+    #   learn.switch_to_interactive
+    #   learn.click_on(grass)
+    #   learn.click_on(rabbit)
+    #   learn.click_on(play)
+    #   sleep(10)
+    #   learn.click_on(pause)
+    #   learn.switch_to_main
+    # when /Biologica/
+    #   mom_end = {css: '#mother-meiosis > .meiosis > .controls > .buttons > .end'}
+    #   mother_cell = {css: '#mother-meiosis > div > div.cell > svg > circle:nth-child(4)'}
+    #   father_end = {css: '#father-meiosis > .meiosis > .controls > .buttons > .end'}
+    #   father_cell = {css: '#father-meiosis > div > div.cell > svg > circle:nth-child(6)'}
+    #   baby_end = {css: '#offspring-meiosis > div > div.controls > div.buttons > button.end'}
+    #
+    #   learn.switch_to_interactive
+    #   learn.click_on(mom_end)
+    #   learn.click_on(father_end)
+    #   learn.click_on(mother_cell)
+    #   learn.click_on(father_cell)
+    #   learn.click_on(baby_end)
+    #   sleep(3)
+    #   learn.switch_to_main
 
+    # when "Labbook"
+    #   puts "Labbook"
+    # when /no interactive/
+    #   #verify snapshot button not present
+    #   if !(learn.find(SNAPSHOT_BUTTON).present?)
+    #     puts "No snapshot button found"
+    #   end
+    # when /Prediction/
+    #   puts 'In Prediction graph'
+    #   #draw line
+    # when /Convection/
+    #   puts "In convection"
+    #   #click play
+    # when /Interactive table/
+    #   puts "in interactive table"
+    #   # type in text to four tds
+    # when /Netlogo/
+    #   puts "in Netlogo"
+    #   #click run button, move planet
+    # when /Sensor connector/
+    #   puts "in Sensor connector"
+    #   #click cancel in alert
+    # when /Completion/
+    #   puts "in completion page"
   end
+
   # puts "before take_snapshot"
-  # learn.take_snapshot
-  # sleep(5)
+  # if (page_title != /no interactive/) || (page_title != /Completion/)
+  #   learn.take_snapshot
+  #   sleep(5)
+  # end
 end
 
 
