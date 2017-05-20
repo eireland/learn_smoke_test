@@ -10,5 +10,5 @@ learn.verify_page('Drawing tool drawing')
 
 learn.open_draw_tool
 learn.draw_shape
-
+learn.close_draw_tool
 sleep(10)

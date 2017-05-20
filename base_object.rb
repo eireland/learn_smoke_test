@@ -7,8 +7,18 @@ class BaseObject
     @@driver = Selenium::WebDriver.for browser
   end
 
+  def teardown
+    @@driver.quit
+  end
+
+  def manage_window_size
+    target_size = Selenium::WebDriver::Dimension.new(1680,1050)
+    @@driver.manage.window.size = target_size
+  end
+
   def visit(url='/')
     @@driver.get(url)
+    manage_window_size
   end
 
   def verify_page(title)
@@ -85,27 +95,14 @@ class BaseObject
     wait_for {displayed? (menu_item)}
   end
 
-  def select_from_dropdown(dropdown, dropdown_list, item)
+  def select_from_dropdown(dropdown, dropdown_locator, item)
     puts "In select from dropdown"
     dropdown_loc = find(dropdown)
     puts "Found dropdown_loc at #{dropdown_loc}"
-    list = dropdown_loc.find_elements(dropdown_list)
-    puts "List has following options: #{list}"
-    list.each do  |option|
-      puts "Option is #{option}"
-      puts "Option text is #{option.text}"
-      if option.text.include? item
-        option.click
-        puts "Clicked item is #{option.text}"
-      end
-    end
-    # menu_item = {xpath: "//li[contains(@class,'selectboxit-option')]/a/text()"}
-    # # wait_for {displayed? (menu_item)}
-    # click_on(menu_item)
-
-    # //*[@id="6"]/a/text()
-
-
+    click_on(dropdown)
+    sleep(3)
+    list_item = {xpath: "#{dropdown_locator}ul/li/a[contains(text(),'#{item}')]"}#templatePulldown>span>ul>li
+    click_on(list_item)
   end
 
   def get_link(page_locator)
