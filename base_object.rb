@@ -46,6 +46,12 @@ class BaseObject
     find(locator).click
   end
 
+  def click_with_offset(locator,xoffset, yoffset)
+    puts "in click with offset"
+    element = find(locator)
+    @@driver.action.move_to(element, xoffset, yoffset).click.perform
+  end
+
   def click_hold(locator,duration)
     element = @@driver.find(locator)
     @@driver.action.click_and_hold(element).perform
@@ -113,13 +119,13 @@ class BaseObject
     @@driver.action.drag_and_drop_by(element, 100, 50).perform
   end
 
-  def draw(element)
+  def draw(pencil, palette)
     puts "in draw"
-    puts "Element is #{element}"
-    click_on(element)
-    puts "clicked on #{element}"
-    el = find (element)
-    # @@driver.action.click_and_hold(el).move_by(150,150).release(el).perform
+    paper = find(palette)
+    click_on(pencil)
+    @@driver.action.move_to(paper).click.perform
+    puts "do second click"
+    @@driver.action.move_to(paper, 350, 250).click.perform
+    sleep(1)
   end
-
 end
