@@ -206,7 +206,7 @@ links.each do |link|
       sleep(5)
       lara.switch_to_main
     when /Sensor connector/
-      system('say "Watch the computer now!"')
+      system('say "Watch the computer now!"') #Need to click the don't open the sensorconnector dialog box so it doesn't interfere with printing the answer report in the completion page.
       puts "in Sensor connector"
       learn.switch_to_main
     when /Completion/
