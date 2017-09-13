@@ -1,3 +1,4 @@
+require 'selenium-webdriver'
 require 'rspec/expectations'
 include RSpec::Matchers
 
@@ -92,7 +93,46 @@ class BaseObject
 
   def switch_to_iframe(locator)
     @@driver.switch_to.frame(locator)
+  end
 
+  def get_tab_handles
+    return @@driver.window_handles
+  end
+
+  def switch_to_tab(handle)
+    puts "in switch to tab"
+    @@driver.switch_to.window(handle)
+  end
+
+  def switch_to_main()
+    puts "in switch to main"
+    @@driver.switch_to.default_content
+  end
+
+  def switch_to_first_tab()
+    puts "in switch to first tab"
+    @@driver.switch_to.window(@@driver.window_handles.first)
+    window_handle = @@driver.window_handles.first
+    return window_handle
+  end
+
+  def switch_to_last_tab()
+    puts "in switch to last tab"
+    # @@driver.action.send_keys(:control + :tab).perform
+    @@driver.switch_to.window(@@driver.window_handles.last)
+    window_handle = @@driver.window_handles.last
+    return window_handle
+  end
+
+  def close_tab(handle)
+    puts "in close tab"
+    @@driver.switch_to.window(handle)
+    @@driver.close
+  end
+
+
+  def switch_to_last_window()
+    @@driver.switch_to.window(@@driver.window_handles.last)
   end
 
   def select_menu_item(menu, menu_item)
