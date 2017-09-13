@@ -1,5 +1,6 @@
 require './lara_object.rb'
 require './base_object.rb'
+require './portal_main_object.rb'
 require 'selenium-webdriver'
 
 PHOTON_RADIO = {xpath: './/label[contains(@for,"select-model-3")]'}
@@ -16,75 +17,91 @@ PREDICTION_PENCIL = {css: '.draw'}
 PREDICTON_PALETTE = {id: "predictionGraph"}
 SNAPSHOT_BUTTON = {css: '.image_snapshot_button'}
 LABBOOK_SNAPSHOT_BUTTON = {css: '.lb-action-btn'}
+SHOW_ALL_ANSWERS_BUTTON = {css: '.gen-report'}
 EXIT_ACTIVITY_BUTTON = {css: '.finish-links'}
+PRINT_BUTTON = {xpath: '//*[@id="nav-activity-menu"]/ul/li[1]/a[contains(text(),"Print")]'}
+PRINT_DIALOG_SAVE_BUTTON = {css: '#print-header > div > button.print.default'}
 
+learn_url = 'https://learn.staging.concord.org'
+shutterbug_url = 'https://authoring.staging.concord.org/activities/762/'
 
-url = 'http://authoring.staging.concord.org/activities/762/'
+student_name = 'dnoble'
+student_password = 'tardis'
 
 links = []
-
-learn = LARAObject.new()
+learn = PortalMainObject.new()
+lara = LARAObject.new()
 learn.setup_one(:chrome)
-learn.visit(url)
-learn.verify_activity('Shutterbug Smoke Test')
+learn.visit(learn_url)
+learn.verify_page("STEM Resource Finder")
+learn.click_button('login')
+learn.login(student_name,student_password)
+if learn.verify_auth_user('admin')
+  puts "auth user verified"
+else
+  puts "auth not verified"
+end
+learn.run_activity_solo
+learn.visit(shutterbug_url)
+lara.verify_activity('Shutterbug Smoke Test')
 
-pages = learn.get_pages()
+pages = lara.get_pages()
 # puts "pages are #{pages}"
 pages.each do |page|
-  link = learn.get_link(page)
-  link.slice! url
+  link = lara.get_link(page)
+  link.slice! shutterbug_url
   links<<link
 end
-# puts "links are #{links}"
+puts "links are #{links}"
 
 links.shift # removes the home page of the shutterbug activity
 
 #Fails at Page 12 because have to make a drawing first and then take a snapshot/ Look for "Drawing tool drawing?"
 links.each do |link|
-  learn.visit(url+link)
+  learn.visit(shutterbug_url+link)
   sleep(10)
   #check which page to know what to do at each page
-  page_title = learn.get_page_title
-  puts "Page_title is #{page_title}"
+
+  page_title = lara.get_page_title
   case (page_title)
     when /Drawing/
-      learn.open_draw_tool
-      learn.draw_shape
-      learn.close_draw_tool
+      lara.open_draw_tool
+      lara.draw_shape
+      lara.close_draw_tool
       sleep(2)
     when /Molecular Workbench/
-      learn.switch_to_interactive
-      learn.play_interactive
+      lara.switch_to_interactive
+      lara.play_interactive
       sleep(2)
-      learn.switch_to_main
+      lara.switch_to_main
     when /Photons/
-      learn.switch_to_interactive
-      learn.click_on(PHOTON_RADIO)
-      learn.click_on(PHOTON_CHECKBOX)
-      learn.play_interactive
+      lara.switch_to_interactive
+      lara.click_on(PHOTON_RADIO)
+      lara.click_on(PHOTON_CHECKBOX)
+      lara.play_interactive
       sleep(2)
-      learn.switch_to_main
+      lara.switch_to_main
     when /Balloon Charge/
-      learn.switch_to_interactive
-      learn.click_on(SHOW_ATOM_CHECKBOX)
-      learn.click_on(SHOW_ELECTRON_CLOUD)
+      lara.switch_to_interactive
+      lara.click_on(SHOW_ATOM_CHECKBOX)
+      lara.click_on(SHOW_ELECTRON_CLOUD)
       sleep(2)
-      learn.switch_to_main
+      lara.switch_to_main
     when /Model with text/
-      learn.switch_to_interactive
-      learn.play_interactive
+      lara.switch_to_interactive
+      lara.play_interactive
       sleep(2)
-      learn.switch_to_main
+      lara.switch_to_main
     when /HAS water/
       puts "In HAS water"
       dropdown_loc = "//div[contains(@id,'templatePulldown')]/span/"
-      learn.switch_to_interactive
+      lara.switch_to_interactive
       sleep(2)
-      learn.click_on(HAS_INTRO_CLOSE)
-      learn.select_from_dropdown(HAS_DROPDOWN,dropdown_loc,"Rural vs. urban areas")
-      learn.play_interactive
+      lara.click_on(HAS_INTRO_CLOSE)
+      lara.select_from_dropdown(HAS_DROPDOWN,dropdown_loc,"Rural vs. urban areas")
+      lara.play_interactive
       sleep(5)
-      learn.switch_to_main
+      lara.switch_to_main
     when /line graph/
       puts "In ITSI Model with line graph"
       # click grass, rabbit, hawk, fox buttons, click play button
@@ -92,15 +109,15 @@ links.each do |link|
       element_buttons = {css: '.has-no-button' }
       pause = {css: ".pause"}
 
-      learn.switch_to_interactive
+      lara.switch_to_interactive
       el_buttons = learn.find_all(element_buttons)
       el_buttons.each do |button|
         button.click
       end
-      learn.click_on(play)
+      lara.click_on(play)
       sleep(10)
-      learn.click_on(pause)
-      learn.switch_to_main
+      lara.click_on(pause)
+      lara.switch_to_main
     when /bar graph/
       puts "In ITSI Model with bar graph"
        #click grass, rabbit buttons, click play button
@@ -109,13 +126,13 @@ links.each do |link|
       rabbit =  {xpath: '//*[@id="environment"]/div/div/div[4]' }
       pause = {css: ".pause"}
 
-      learn.switch_to_interactive
-      learn.click_on(grass)
-      learn.click_on(rabbit)
-      learn.click_on(play)
+      lara.switch_to_interactive
+      lara.click_on(grass)
+      lara.click_on(rabbit)
+      lara.click_on(play)
       sleep(10)
-      learn.click_on(pause)
-      learn.switch_to_main
+      lara.click_on(pause)
+      lara.switch_to_main
     when /Biologica/
       mom_end = {css: '#mother-meiosis > .meiosis > .controls > .buttons > .end'}
       mother_cell = {css: '#mother-meiosis > div > div.cell > svg > circle:nth-child(3)'}
@@ -123,38 +140,38 @@ links.each do |link|
       father_cell = {css: '#father-meiosis > div > div.cell > svg > circle:nth-child(6)'}
       baby_end = {css: '#offspring-meiosis > div > div.controls > div.buttons > button.end'}
 
-      learn.switch_to_interactive
-      learn.click_on(mom_end)
-      learn.click_on(father_end)
+      lara.switch_to_interactive
+      lara.click_on(mom_end)
+      lara.click_on(father_end)
       sleep(1)
-      learn.click_with_offset(mother_cell,25,40)
-      learn.click_with_offset(father_cell,25,40)
+      lara.click_with_offset(mother_cell,25,40)
+      lara.click_with_offset(father_cell,25,40)
       sleep(1)
-      learn.click_on(baby_end)
+      lara.click_on(baby_end)
       sleep(5)
-      learn.switch_to_main
+      lara.switch_to_main
 
     when "Labbook"
       puts "Labbook"
     when /no interactive/
       puts "in Labbook with no interactive"
       #verify snapshot button not present
-      if !(learn.displayed?(SNAPSHOT_BUTTON))
+      if !(lara.displayed?(SNAPSHOT_BUTTON))
         puts "No snapshot button found"
       end
     when /Prediction/
       puts 'In Prediction graph'
-      learn.switch_to_interactive
+      lara.switch_to_interactive
       sleep(1)
-      learn.draw(PREDICTION_PENCIL, PREDICTON_PALETTE)
+      lara.draw(PREDICTION_PENCIL, PREDICTON_PALETTE)
       sleep(5)
-      learn.switch_to_main
+      lara.switch_to_main
     when /Convection/
       puts "In convection"
-      learn.switch_to_interactive
-      learn.play_interactive
+      lara.switch_to_interactive
+      lara.play_interactive
       sleep(10) #wait to generate heat
-      learn.switch_to_main
+      lara.switch_to_main
     when /Interactive table/
       puts "in interactive table"
       cell1 = {css: '.data > td:nth-child(1)'}
@@ -166,35 +183,42 @@ links.each do |link|
       cell4 = {css: '.data > td:nth-child(4)'}
       input4 = {css: '.data > td:nth-child(4) > input.editor-text'}
       # type in text to four tds
-      learn.switch_to_interactive
+      lara.switch_to_interactive
       sleep(1)
-      learn.click_on(cell1)
+      lara.click_on(cell1)
       sleep(1)
-      learn.type(input1,"metal")
+      lara.type(input1,"metal")
       sleep(1)
-      learn.click_on(cell2)
+      lara.click_on(cell2)
       sleep(1)
-      learn.click_on(cell3)
+      lara.click_on(cell3)
       sleep(1)
-      learn.type(input3, "repel")
-      learn.click_on(cell4)
+      lara.type(input3, "repel")
+      lara.click_on(cell4)
       sleep(1)
-      learn.type(input4, "negative")
-      learn.switch_to_main
+      lara.type(input4, "negative")
+      lara.switch_to_main
     when /Netlogo/
       puts "in Netlogo"
       play = {css: ".netlogo-forever-button"}
-      learn.switch_to_interactive
-      learn.click_on(play)
+      lara.switch_to_interactive
+      lara.click_on(play)
       sleep(5)
-      learn.switch_to_main
+      lara.switch_to_main
     when /Sensor connector/
+      system('say "Watch the computer now!"')
       puts "in Sensor connector"
-      # popup = learn.switch_to_modal
-      # popup.cancel
+      learn.switch_to_main
     when /Completion/
       puts "in completion page"
-      learn.click_on(EXIT_ACTIVITY_BUTTON)
+      lara.click_on(SHOW_ALL_ANSWERS_BUTTON)
+      sleep(2)
+      lara.switch_to_last_tab
+      lara.click_on(PRINT_BUTTON)
+      sleep(3)
+      lara.switch_to_last_tab
+      lara.chrome_print("pdf")
+      sleep(5)
   end
 
   if (page_title.include?("no interactive")) || (page_title.include?("Completion") || (page_title.include?("Video")) || (page_title.include?("Sensor connector")))
@@ -206,7 +230,7 @@ links.each do |link|
     else
       puts "before take_snapshot"
       sleep(1)
-      learn.take_snapshot
+      lara.take_snapshot
       sleep(10)
       # if page_title == "Video"
       #   if learn.displayed?(VIDEO_ERROR)

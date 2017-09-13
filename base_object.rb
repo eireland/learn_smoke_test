@@ -104,11 +104,6 @@ class BaseObject
     @@driver.switch_to.window(handle)
   end
 
-  def switch_to_main()
-    puts "in switch to main"
-    @@driver.switch_to.default_content
-  end
-
   def switch_to_first_tab()
     puts "in switch to first tab"
     @@driver.switch_to.window(@@driver.window_handles.first)
@@ -159,13 +154,22 @@ class BaseObject
     @@driver.action.drag_and_drop_by(element, 100, 50).perform
   end
 
-  def draw(pencil, palette)
-    puts "in draw"
-    paper = find(palette)
-    click_on(pencil)
-    @@driver.action.move_to(paper).click.perform
-    puts "do second click"
-    @@driver.action.move_to(paper, 350, 250).click.perform
+  def chrome_print(type)
+    print_save_button =  {css: '#print-header > div > button.print.default'}
+    change_destination = {css: '#destination-settings > div.right-column > button'}
+    pdf = {xpath: '//ul/li/span/span[contains(@title,"Save as PDF")]'}
+
+    case (type)
+      when "pdf"
+        destination = pdf
+    end
+    switch_to_last_window
+    click_on(change_destination)
+    sleep(2)
+    click_on(destination)
+    click_on(print_save_button)
     sleep(1)
+    keys = 'return'
+    system('osascript -e \'tell application "System Events" to keystroke ' + keys + "'")
   end
 end

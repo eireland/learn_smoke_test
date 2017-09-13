@@ -39,8 +39,12 @@ class LARAObject < BaseObject
 
   def get_page_title()
     puts "In get_page_title"
-    wait_for {displayed? (PAGE_TITLE)}
-    title = find(PAGE_TITLE).text
+    titles = find_all(PAGE_TITLE)
+    if titles.length == 0
+      title = "Completion Page"
+    else
+      title = find(PAGE_TITLE).text
+    end
     puts "PAGE_TITLE is #{title}"
     return title
   end
@@ -73,6 +77,16 @@ class LARAObject < BaseObject
     wait_for { displayed? (IMAGE_DIALOG)}
     switch_to_modal()
     sleep (8)
+  end
+
+  def draw(pencil, palette)
+    puts "in draw"
+    paper = find(palette)
+    click_on(pencil)
+    @@driver.action.move_to(paper).click.perform
+    puts "do second click"
+    @@driver.action.move_to(paper, 350, 250).click.perform
+    sleep(1)
   end
 
 end
