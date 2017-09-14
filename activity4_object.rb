@@ -37,17 +37,6 @@ class Activity4Object < BaseObject
     find_all(PAGE_ICONS)
   end
 
-  # def take_snapshot(link)
-  #   visit(link)
-  #   wait_for{ displayed?(SNAPSHOT_BUTTON) }
-  #   click_on(SNAPSHOT_BUTTON)
-  #   wait_for{ displayed?(IMAGE_DIALOG) }
-  #   switch_to_modal()
-  #   sleep(18)
-  #   click_on(IMAGE_DONE_BUTTON)
-  #   wait_for {!displayed? (SPINNER)}
-  # end
-
   def open_draw_tool
     wait_for { displayed?(DRAWING_BUTTON) }
     click_on(DRAWING_BUTTON)
