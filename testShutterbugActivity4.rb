@@ -1,6 +1,6 @@
 require './lara_object.rb'
 require './base_object.rb'
-require './portal_main_object.rb'
+require './learn_component_objects/portal_main_object.rb'
 require 'selenium-webdriver'
 
 PHOTON_RADIO = {xpath: './/label[contains(@for,"select-model-3")]'}
