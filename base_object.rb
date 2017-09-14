@@ -6,7 +6,64 @@ class BaseObject
 
   def setup_one(browser)
     @@driver = Selenium::WebDriver.for browser
+    rescue Exception => e
+      puts e.message
+      puts "Could not start driver #{@@driver}"
+      exit
   end
+
+  # def setup_caps(platform, browser)
+  #   puts "In setup_caps #{platform}, #{browser}"
+  #   caps = Selenium::WebDriver::Remote::Capabilities.new
+  #   if browser == "iPad"
+  #     caps['appiumVersion'] = '1.6.3'
+  #     caps['deviceName'] = 'iPad Simulator'
+  #     caps['platformName'] = 'iOS'
+  #     caps['platformVersion'] = '9.3'
+  #     caps['deviceOrientation'] = 'landscape'
+  #     caps['browserName'] = 'Safari'
+  #     caps['rotatable'] = true
+  #   elsif browser == "Android" #Need an Android Emulator that runs Chrome instead of generic Browser
+  #     caps['appiumVersion'] = '1.6.3'
+  #     caps['platformName'] = 'Android'
+  #     caps['platformVersion'] = '6.0'
+  #     caps['browserName'] ='Chrome'
+  #     caps['deviceName'] = 'Android Emulator'
+  #     caps['deviceOrientation'] = 'landscape'
+  #     caps['nativeWebScreenshot'] = true
+  #     caps['rotatable'] = true
+  #   else
+  #     caps['platform'] = platform
+  #     caps['browserName'] = browser
+  #     caps['logging_prefs'] = {:browser => "ALL"}
+  #   end
+  #   puts "Caps are #{caps}"
+  #   return caps
+  # end
+  #
+  # #does not work for tests that need to open a CODAP file
+  # def setup_remote(caps)
+  #   puts "in setup_remote #{caps}"
+  #   @@driver = Selenium::WebDriver.for(:remote,
+  #                                      :url => "http://eireland:b64ffb1e-a71d-40db-a73c-67a8b43620b6@ondemand.saucelabs.com:80/wd/hub",
+  #                                      :desired_capabilities => caps)
+  #   rescue Exception => e
+  #     puts e.message
+  #     puts "Could not start driver #{@@driver}"
+  #     exit
+  # end
+  #
+  # def setup_grid(caps)
+  #   puts "in setup_remote #{caps}"
+  #   @@driver = Selenium::WebDriver.for (
+  #       :remote,
+  #       :url=> 'http://localhost:4444/wd/hub',
+  #       :desired_capabilities=> caps )
+  # rescue Exception => e
+  #   puts e.message
+  #   puts "Could not start driver #{@@driver}"
+  #   exit
+  # end
 
   def teardown
     @@driver.quit
@@ -25,6 +82,10 @@ class BaseObject
   def verify_page(title)
     puts "Page title is #{@@driver.title}"
     expect(@@driver.title).to include(title)
+  end
+
+  def get_page_title
+    return @@driver.title
   end
 
   def find(locator)
@@ -60,6 +121,10 @@ class BaseObject
     @@driver.action.release(element).perform
   end
 
+  def hover(locator)
+    @@driver.action.move_to(locator).perform
+  end
+
   def displayed?(locator)
     @@driver.find_element(locator).displayed?
     true
@@ -75,15 +140,64 @@ class BaseObject
     @@driver.title
   end
 
+  def save_screenshot(dir,page_title)
+    puts "in get_screenshot"
+    @@driver.save_screenshot "#{dir}/#{page_title}.png"
+  end
+
+  def write_log_file(dir_path, filename)
+    log = @@driver.manage.logs.get(:browser)
+    messages = ""
+    log.each {|item| messages += item.message + "\n"}
+
+    if !File.exist?("#{dir_path}/#{filename}.txt")
+      File.open("#{dir_path}/#{filename}.txt", "wb") do |log|
+        log<< messages unless messages == ""
+      end
+    else
+      File.open("#{dir_path}/#{filename}.txt", "a") do |log|
+        log << messages unless messages == ""
+      end
+    end
+  end
+
+  def write_to_file(dir_path, filename, message)
+    if !File.exist?("#{dir_path}/#{filename}.txt")
+      File.open("#{dir_path}/#{filename}.txt", "wb") do |responses|
+        responses<< message unless message == ""
+      end
+    else
+      File.open("#{dir_path}/#{filename}.txt", "a") do |responses|
+        responses << message unless message == ""
+      end
+    end
+  end
+
   def wait_for(seconds=25)
     Selenium::WebDriver::Wait.new(:timeout => seconds).until { yield }
   end
 
+  def pop_up_click(locator)
+    puts "In pop_up_click"
+    @@driver.action.click(locator).perform
+  end
+
+  def pop_up_type(locator, input)
+    puts "In pop_up_type. Input is: #{input}"
+    @@driver.action.send_keys(locator, input).perform
+  end
+
+  def move_to(locator)
+    @@driver.action.move_to(locator).perform
+  end
+
   def switch_to_main()
+    puts "in switch to main"
     @@driver.switch_to.default_content()
   end
 
   def switch_to_alert()
+    puts "In switch to alert"
     @@driver.switch_to.alert()
   end
 
@@ -92,6 +206,7 @@ class BaseObject
   end
 
   def switch_to_iframe(locator)
+    puts "In switch to iframe"
     @@driver.switch_to.frame(locator)
   end
 
@@ -130,28 +245,17 @@ class BaseObject
     @@driver.switch_to.window(@@driver.window_handles.last)
   end
 
-  def select_menu_item(menu, menu_item)
+  def select_menu_item(menu_item_text)
     puts 'in select_menu_item'
-    find(menu)
+    menu_item = {xpath: "//div/a[contains(@class,'menu-item')]/span[contains(text(),'#{menu_item_text}')]"}
     wait_for {displayed? (menu_item)}
+    click_on(menu_item)
   end
 
-  def select_from_dropdown(dropdown, dropdown_locator, item)
-    puts "In select from dropdown"
-    dropdown_loc = find(dropdown)
-    puts "Found dropdown_loc at #{dropdown_loc}"
-    click_on(dropdown)
-    sleep(3)
-    list_item = {xpath: "#{dropdown_locator}ul/li/a[contains(text(),'#{item}')]"}#templatePulldown>span>ul>li
-    click_on(list_item)
-  end
-
-  def get_link(page_locator)
-    return page_locator.attribute('href')
-  end
-
-  def drag_and_drop(element)
-    @@driver.action.drag_and_drop_by(element, 100, 50).perform
+  def drag_attribute(source_element, target_element)
+    source_loc = find(source_element)
+    target_loc = find(target_element)
+    @@driver.action.drag_and_drop(source_loc, target_loc).perform
   end
 
   def chrome_print(type)
@@ -172,4 +276,45 @@ class BaseObject
     keys = 'return'
     system('osascript -e \'tell application "System Events" to keystroke ' + keys + "'")
   end
+
+  def compare_images(path_a, path_b)
+    return 100 if !File.exist?(path_a) || !File.exist?(path_b)
+    a = Magick::Image.read(path_a).first
+    b = Magick::Image.read(path_b).first
+    a.resize!(b.columns, b.rows) if a.columns != b.columns || a.rows != b.rows
+    a.compare_channel(b, Magick::RootMeanSquaredErrorMetric)[1] * 100
+  end
+
+  def compare_file_sizes(dir_a, dir_b)
+    file_mismatch = []
+    missing_expected_files = []
+    dir_a_files = Dir.entries(dir_a)
+    dir_b_files = Dir.entries(dir_b)
+    num_files_a = dir_a_files.length
+    num_files_b = dir_b_files.length
+
+    while dir_a_files.length > 0
+      file = dir_a_files[0]
+      # puts "File is #{file}. File size test is #{File.size("#{dir_a}/#{file}")}"
+      # puts "Expected file is #{dir_b}/#{file}. File size expected is #{File.size("#{dir_b}/#{file}")}"
+      if File.exists?("#{dir_b}/#{file}")
+        if File.size("#{dir_a}/#{file}") != File.size("#{dir_b}/#{file}")
+          if file!= '.'
+            file_mismatch.push(file)
+          end
+        end
+      else
+        missing_expected_files.push(file)
+      end
+      dir_a_files.shift
+      puts ("After shift dir_a_files is #{dir_a_files}")
+    end
+
+    if file_mismatch.length == 0 && missing_expected_files.length == 0
+      return "ALL FILES MATCH"
+    else
+      return "These files do not match #{file_mismatch}. These expected files are missing #{missing_expected_files}"
+    end
+  end
+
 end
