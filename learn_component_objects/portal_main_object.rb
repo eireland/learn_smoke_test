@@ -1,5 +1,5 @@
 require '../base_object'
-require './login_modal'
+require './login_modal_object'
 require './portal_landing_object'
 require './learn_header_object'
 require './home_page_object'
