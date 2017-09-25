@@ -20,7 +20,6 @@ module PortalLandingObject
     wait_for {displayed? (SRF_HEADER)}
     return true
   end
-end
 
 end
 
