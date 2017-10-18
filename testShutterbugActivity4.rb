@@ -116,7 +116,7 @@ links.each do |link|
         button.click
       end
       lara.click_on(play)
-      sleep(20)
+      sleep(8)
       lara.click_on(pause)
       lara.switch_to_main
     when /bar graph/
@@ -131,7 +131,7 @@ links.each do |link|
       lara.click_on(grass)
       lara.click_on(rabbit)
       lara.click_on(play)
-      sleep(20)
+      sleep(8)
       lara.click_on(pause)
       lara.switch_to_main
     when /Biologica/
