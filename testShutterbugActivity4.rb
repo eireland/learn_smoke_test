@@ -68,7 +68,7 @@ links.each do |link|
       lara.open_draw_tool
       lara.draw_shape
       lara.close_draw_tool
-      sleep(10)
+      sleep(20)
       lara.switch_to_main
     when /Molecular Workbench/
       lara.switch_to_interactive
@@ -116,7 +116,7 @@ links.each do |link|
         button.click
       end
       lara.click_on(play)
-      sleep(10)
+      sleep(20)
       lara.click_on(pause)
       lara.switch_to_main
     when /bar graph/
@@ -131,7 +131,7 @@ links.each do |link|
       lara.click_on(grass)
       lara.click_on(rabbit)
       lara.click_on(play)
-      sleep(10)
+      sleep(20)
       lara.click_on(pause)
       lara.switch_to_main
     when /Biologica/
