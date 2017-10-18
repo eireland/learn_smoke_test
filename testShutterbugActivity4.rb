@@ -16,7 +16,7 @@ VIDEO_ERROR_CLOSE = {css: '.ui-dialog-titlebar-close'}
 PREDICTION_PENCIL = {css: '.draw'}
 PREDICTON_PALETTE = {id: "predictionGraph"}
 SNAPSHOT_BUTTON = {css: '.image_snapshot_button'}
-LABBOOK_SNAPSHOT_BUTTON = {css: '.lb-action-btn'}
+LABBOOK_SNAPSHOT_BUTTON = {css: ".lb-action-btn"}
 SHOW_ALL_ANSWERS_BUTTON = {css: '.gen-report'}
 EXIT_ACTIVITY_BUTTON = {css: '.finish-links'}
 PRINT_BUTTON = {xpath: '//*[@id="nav-activity-menu"]/ul/li[1]/a[contains(text(),"Print")]'}
@@ -52,12 +52,12 @@ pages.each do |page|
   link.slice! shutterbug_url
   links<<link
 end
-puts "links are #{links}"
 
 links.shift # removes the home page of the shutterbug activity
 
 #Fails at Page 12 because have to make a drawing first and then take a snapshot/ Look for "Drawing tool drawing?"
 links.each do |link|
+  puts "URL to visit #{shutterbug_url+link}"
   learn.visit(shutterbug_url+link)
   sleep(10)
   #check which page to know what to do at each page
@@ -153,6 +153,7 @@ links.each do |link|
 
     when "Labbook"
       puts "Labbook"
+      learn.take_labbook_snapshot
     when /no interactive/
       puts "in Labbook with no interactive"
       #verify snapshot button not present
@@ -205,6 +206,29 @@ links.each do |link|
       lara.click_on(play)
       sleep(5)
       lara.switch_to_main
+    when /Seismic Explorer/
+      puts "in Seismic Explorer"
+      learn.switch_to_interactive
+      sleep(3)
+      learn.click_on(DATA_TYPE_BUTTON)
+      sleep(1)
+      learn.click_on(PLATE_BOUNDARIES_CHECKBOX)
+      sleep(1)
+      learn.click_on(VOLCANOES_CHECKBOX)
+      sleep(1)
+      learn.click_on(PLATE_MOVEMENT_CHECKBOX)
+      sleep(1)
+      learn.click_on(DATA_TYPE_CLOSE)
+      sleep(1)
+      learn.click_on(ANIMATION_BUTTON)
+      sleep(15)
+      learn.switch_to_main
+      sleep(1)
+      learn.take_labbook_snapshot
+      sleep(10)
+      learn.take_snapshot
+      sleep(10)
+      lara.switch_to_main
     when /Sensor connector/
       system('say "Watch the computer now!"') #Need to click the don't open the sensorconnector dialog box so it doesn't interfere with printing the answer report in the completion page.
       puts "in Sensor connector"
@@ -224,10 +248,10 @@ links.each do |link|
   if (page_title.include?("no interactive")) || (page_title.include?("Completion") || (page_title.include?("Video")) || (page_title.include?("Sensor connector")))
     puts "Do not take snapshot"
   else
-    if page_title == "Labbook"
-      puts "In labbook"
-      # learn.click_on(LABBOOK_SNAPSHOT_BUTTON)
-    else
+    # if page_title == "Labbook"
+    #   puts "In labbook"
+    #   learn.click_on(LABBOOK_SNAPSHOT_BUTTON)
+    # else
       puts "before take_snapshot"
       sleep(1)
       lara.take_snapshot
@@ -240,7 +264,6 @@ links.each do |link|
       #     puts "wrong error"
       #   end
       # end
-    end
   end
 end
 

@@ -174,7 +174,7 @@ class BaseObject
     end
   end
 
-  def wait_for(seconds=25)
+  def wait_for(seconds=45)
     Selenium::WebDriver::Wait.new(:timeout => seconds).until { yield }
   end
 
@@ -203,6 +203,7 @@ class BaseObject
   end
 
   def switch_to_modal()
+    puts "In switch to modal"
     @@driver.switch_to.active_element()
   end
 

@@ -17,7 +17,15 @@ class LARAObject < BaseObject
   IMAGE_DIALOG = {css: '.image-question-dialog'}
   IMAGE_DONE_BUTTON = {css: '.image_done_button'}
   SPINNER = {css: '.wait-for'}
-  IFRAME = {css: 'iframe'}
+  IFRAME = {tag_name: 'iframe'}
+  LABBOOK_SNAPSHOT_BUTTON ={css: ".lb-action-btn"}
+  LABBOOK_DIALOG = {css: '.lb-dialog'}
+  LABBOOK_SAVE = {xpath: "//div[contains(@class,'snapshot-form')]/form/div[contains(@class,'right')]/div[contains(@class,'actions')]/input"}
+  LABBOOK_CLOSE_BUTTON = {xpath: ".//div[contains(@class,'ui-dialog-titlebar')]/button[contains(@class,'ui-dialog-titlebar-close')]"}
+  LABBOOK_SNAPSHOT_FORM = {css: '.snapshot-form'}
+  LABBOOK_IFRAME = {css: '.labbook-content'}
+
+
 
 
   def initialize()
@@ -30,7 +38,7 @@ class LARAObject < BaseObject
     expect(activity_name).to include(title)
   end
 
-  def verify_page(title)
+  def verify_page_header(title)
     puts "Page title is #{title}"
     page_title = find(PAGE_TITLE).text
     puts "PAGE_TITLE text is #{page_title}"
@@ -53,9 +61,8 @@ class LARAObject < BaseObject
     find_all(PAGE_ICONS)
   end
 
-
   def switch_to_interactive()
-    puts "In switch to iframe"
+    puts "In switch to interactive"
     interactive = find(IFRAME)
     switch_to_iframe(interactive)
   end
@@ -69,6 +76,27 @@ class LARAObject < BaseObject
     click_on(IMAGE_DONE_BUTTON)
     wait_for {!displayed? (SPINNER)}
     puts "took snapshot"
+    switch_to_main()
+  end
+
+  def take_labbook_snapshot()
+    "puts in take labbook snapshot"
+    wait_for{ displayed? (LABBOOK_SNAPSHOT_BUTTON) }
+    click_on(LABBOOK_SNAPSHOT_BUTTON)
+    wait_for{displayed? (LABBOOK_DIALOG)}
+    switch_to_modal()
+    iframe = find(LABBOOK_IFRAME)
+    puts "found iframe at #{iframe}"
+    switch_to_iframe(iframe)
+    sleep(18)
+    form = find(LABBOOK_SNAPSHOT_FORM)
+    puts "form is at #{form}"
+    sleep(5)
+    click_on(LABBOOK_SAVE)
+    sleep(1)
+    switch_to_main()
+    click_on(LABBOOK_CLOSE_BUTTON)
+    switch_to_main()
   end
 
   def open_draw_tool
