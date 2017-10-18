@@ -68,7 +68,8 @@ links.each do |link|
       lara.open_draw_tool
       lara.draw_shape
       lara.close_draw_tool
-      sleep(2)
+      sleep(10)
+      lara.switch_to_main
     when /Molecular Workbench/
       lara.switch_to_interactive
       lara.play_interactive
