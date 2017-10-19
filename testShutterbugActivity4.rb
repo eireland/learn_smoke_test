@@ -131,7 +131,7 @@ links.each do |link|
       lara.click_on(grass)
       lara.click_on(rabbit)
       lara.click_on(play)
-      sleep(8)
+      sleep(5)
       lara.click_on(pause)
       lara.switch_to_main
     when /Biologica/
@@ -154,7 +154,7 @@ links.each do |link|
 
     when "Labbook"
       puts "Labbook"
-      learn.take_labbook_snapshot
+      lara.take_labbook_snapshot
     when /no interactive/
       puts "in Labbook with no interactive"
       #verify snapshot button not present
@@ -254,9 +254,9 @@ links.each do |link|
     #   learn.click_on(LABBOOK_SNAPSHOT_BUTTON)
     # else
       puts "before take_snapshot"
-      sleep(1)
+      sleep(3)
       lara.take_snapshot
-      sleep(10)
+      sleep(20)
       # if page_title == "Video"
       #   if learn.displayed?(VIDEO_ERROR)
       #     puts "Right error"
