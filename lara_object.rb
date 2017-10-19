@@ -72,7 +72,7 @@ class LARAObject < BaseObject
     click_on(SNAPSHOT_BUTTON)
     wait_for{ displayed?(IMAGE_DIALOG) }
     switch_to_modal()
-    sleep(18)
+    sleep(20)
     click_on(IMAGE_DONE_BUTTON)
     wait_for {!displayed? (SPINNER)}
     puts "took snapshot"
