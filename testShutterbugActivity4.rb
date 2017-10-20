@@ -115,10 +115,13 @@ links.each do |link|
       el_buttons.each do |button|
         button.click
       end
+      sleep(1)
       lara.click_on(play)
-      sleep(8)
+      sleep(6)
       lara.click_on(pause)
+      sleep(1)
       lara.switch_to_main
+
     when /bar graph/
       puts "In ITSI Model with bar graph"
        #click grass, rabbit buttons, click play button
@@ -133,6 +136,7 @@ links.each do |link|
       lara.click_on(play)
       sleep(5)
       lara.click_on(pause)
+      sleep(1)
       lara.switch_to_main
     when /Biologica/
       mom_end = {css: '#mother-meiosis > .meiosis > .controls > .buttons > .end'}
@@ -209,19 +213,33 @@ links.each do |link|
       lara.switch_to_main
     when /Seismic Explorer/
       puts "in Seismic Explorer"
-      learn.switch_to_interactive
+      key_button = {xpath: '//div[contains(@class,"right")]/div[contains(text(),"Key")]'}
+      data_type_button = {xpath: '//div[contains(@class,"map-layer-controls")]/div[contains(text(),"Data type")]'}
+      data_type_close = {css: 'div.map-layer-controls > div.modal-style.map-layer-content > i.close-icon'}
+      plate_boundaries_checkbox = {id: 'plate-border-box'}
+      volcanoes_checkbox = {id: 'volcano-box'}
+      earthquakes_checkbox = {id: 'earthquake-toggle'}
+      plate_movement_checkbox = {id: 'plate-arrow-toggle'}
+      satellite_map_type = {xpath: '//div[contains(@class,"settings")]/div[contains(text(),"Map type")]/select/option[contains(text(),"Satellite")]'}
+      street_map_type = {xpath: '//div[contains(@class,"settings")]/div[contains(text(),"Map type")]/select/option[contains(text(),"Street")]'}
+      relief_map_type = {xpath: '//div[contains(@class,"settings")]/div[contains(text(),"Map type")]/select/option[contains(text(),"Relief")]'}
+      ocean_basemap_map_type = {xpath: '//div[contains(@class,"settings")]/div[contains(text(),"Map type")]/select/option[contains(text(),"Ocean basemap")]'}
+      animation_button = {css: '.fa-play'}
+      app = {id:'app'}
+      controls = {css: '.map-layer-controls'}
+      lara.switch_to_interactive
       sleep(3)
-      learn.click_on(DATA_TYPE_BUTTON)
+      learn.click_on(data_type_button)
       sleep(1)
-      learn.click_on(PLATE_BOUNDARIES_CHECKBOX)
+      learn.click_on(plate_boundaries_checkbox)
       sleep(1)
-      learn.click_on(VOLCANOES_CHECKBOX)
+      learn.click_on(volcanoes_checkbox)
       sleep(1)
-      learn.click_on(PLATE_MOVEMENT_CHECKBOX)
+      learn.click_on(plate_movement_checkbox)
       sleep(1)
-      learn.click_on(DATA_TYPE_CLOSE)
+      learn.click_on(data_type_close)
       sleep(1)
-      learn.click_on(ANIMATION_BUTTON)
+      learn.click_on(animation_button)
       sleep(15)
       learn.switch_to_main
       sleep(1)
@@ -246,7 +264,7 @@ links.each do |link|
       sleep(5)
   end
 
-  if (page_title.include?("no interactive")) || (page_title.include?("Completion") || (page_title.include?("Video")) || (page_title.include?("Sensor connector")))
+  if (page_title.include?("no interactive")) || (page_title.include?("Completion") || (page_title.include?("Video")) || (page_title.include?("Labbook")) ||(page_title.include?("Sensor connector")))
     puts "Do not take snapshot"
   else
     # if page_title == "Labbook"
