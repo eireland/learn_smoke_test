@@ -75,6 +75,7 @@ class LARAObject < BaseObject
     sleep(20)
     click_on(IMAGE_DONE_BUTTON)
     wait_for {!displayed? (SPINNER)}
+    sleep(20)
     puts "took snapshot"
     switch_to_main()
   end
@@ -84,19 +85,19 @@ class LARAObject < BaseObject
     wait_for{ displayed? (LABBOOK_SNAPSHOT_BUTTON) }
     click_on(LABBOOK_SNAPSHOT_BUTTON)
     wait_for{displayed? (LABBOOK_DIALOG)}
-    switch_to_modal()
+    switch_to_modal
     iframe = find(LABBOOK_IFRAME)
     puts "found iframe at #{iframe}"
     switch_to_iframe(iframe)
     sleep(18)
-    form = find(LABBOOK_SNAPSHOT_FORM)
-    puts "form is at #{form}"
-    sleep(5)
+    # form = find(LABBOOK_SNAPSHOT_FORM)
+    # puts "form is at #{form}"
+    # sleep(5)
     click_on(LABBOOK_SAVE)
     sleep(1)
-    switch_to_main()
+    switch_to_main
     click_on(LABBOOK_CLOSE_BUTTON)
-    switch_to_main()
+    switch_to_main
   end
 
   def open_draw_tool
