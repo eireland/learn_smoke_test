@@ -244,9 +244,7 @@ links.each do |link|
       learn.switch_to_main
       sleep(1)
       learn.take_labbook_snapshot
-      sleep(10)
-      learn.take_snapshot
-      sleep(10)
+      sleep(20)
       lara.switch_to_main
     when /Sensor connector/
       system('say "Watch the computer now!"') #Need to click the don't open the sensorconnector dialog box so it doesn't interfere with printing the answer report in the completion page.
