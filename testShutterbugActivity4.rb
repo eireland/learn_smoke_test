@@ -243,7 +243,7 @@ links.each do |link|
       sleep(15)
       learn.switch_to_main
       sleep(1)
-      learn.take_labbook_snapshot
+      lara.take_labbook_snapshot
       sleep(20)
       lara.switch_to_main
     when /Sensor connector/
