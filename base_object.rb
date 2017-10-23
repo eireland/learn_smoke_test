@@ -70,8 +70,12 @@ class BaseObject
   end
 
   def manage_window_size
+    current_size = @@driver.manage.window.size
+    puts "window size is #{current_size}"
     target_size = Selenium::WebDriver::Dimension.new(1680,1050)
-    @@driver.manage.window.size = target_size
+    if (current_size != target_size)
+      @@driver.manage.window.size = target_size
+    end
   end
 
   def visit(url='/')
