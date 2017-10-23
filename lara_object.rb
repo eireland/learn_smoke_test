@@ -89,12 +89,12 @@ class LARAObject < BaseObject
     iframe = find(LABBOOK_IFRAME)
     puts "found iframe at #{iframe}"
     switch_to_iframe(iframe)
-    sleep(18)
+    sleep(30)
     # form = find(LABBOOK_SNAPSHOT_FORM)
     # puts "form is at #{form}"
     # sleep(5)
     click_on(LABBOOK_SAVE)
-    sleep(1)
+    sleep(20)
     switch_to_main
     click_on(LABBOOK_CLOSE_BUTTON)
     switch_to_main
